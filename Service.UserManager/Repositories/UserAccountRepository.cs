@@ -9,7 +9,7 @@ namespace Service.UserManager.Repositories;
 public interface IUserAccountRepository
 {
     Task<UserAccount> CreateUser(CreateUserViewModel model);
-    Task<UserAccount> UpdateUser(Guid id, UpdateUserViewModel model);
+    Task<UserAccount?> UpdateUser(Guid id, UpdateUserViewModel model);
     Task<bool> DeleteUser(Guid id);
     Task<UserAccount?> GetUser(Guid id);
     Task<UserAccount?> GetUserByEmail(string email);
@@ -108,10 +108,10 @@ public class UserAccountRepository : IUserAccountRepository
     /// <param name="model"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<UserAccount> UpdateUser(Guid id, UpdateUserViewModel model)
+    public async Task<UserAccount?> UpdateUser(Guid id, UpdateUserViewModel model)
     {
         var existingUser = await _collection.FindByIdAsync(id.ToString());
-        if (existingUser == null) throw new Exception($"Failed to fetch user {id} during update.");
+        if (existingUser == null) return null;
 
         // Replace properties on the existing model, but only if they're being passed in
         existingUser.Name = model.Name ?? existingUser.Name;

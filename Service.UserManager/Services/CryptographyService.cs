@@ -76,8 +76,11 @@ public class CryptographyService : ICryptographyService
         byte[] storedSubkey = new byte[PBKDF2SubkeyLength];
         Buffer.BlockCopy(hashedPasswordBytes, 1 + SaltSize, storedSubkey, 0, PBKDF2SubkeyLength);
 
+        // Combine the passwords just as we do when hashing
+        string combinedPassword = $"{_privateSalt}{customSalt}{passwordToCompare}";
+
         // Turn the password we're comparing into a byte array, including the salt
-        using var deriveBytes = new Rfc2898DeriveBytes(passwordToCompare, salt, PBKDF2IterCount);
+        using var deriveBytes = new Rfc2898DeriveBytes(combinedPassword, salt, PBKDF2IterCount);
         byte[] generatedSubkey = deriveBytes.GetBytes(PBKDF2SubkeyLength);
 
         // Return a comparison between the arrays

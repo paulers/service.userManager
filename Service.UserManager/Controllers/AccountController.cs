@@ -48,5 +48,21 @@ namespace Service.UserManager.Controllers
                 return StatusCode(400, $"Error occurred while fetching user. Our staff has been notified.");
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UserAccount>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserViewModel model)
+        {
+            try
+            {
+                var updatedUser = await _userAccountRepository.UpdateUser(id, model);
+                if (updatedUser == null) return NotFound();
+                Utilities.SanitizeUserAccountModel(updatedUser);
+                return updatedUser;
+            } catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Error while updating user: {ex.Message}");
+                return StatusCode(400, $"Error occurred while updating user. Our staff has been notified.");
+            }
+        }
     }
 }

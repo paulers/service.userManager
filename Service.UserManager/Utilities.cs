@@ -6,6 +6,7 @@ public static class Utilities
 {
     public static void SanitizeUserAccountModel(UserAccount userAccount)
     {
+        if (userAccount == null) return;
         userAccount.Password = null;
         userAccount.PasswordSalt = null;
     }
